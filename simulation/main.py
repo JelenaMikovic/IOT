@@ -6,9 +6,9 @@ from components.dl import run_dl
 from components.uds import run_uds
 from components.db import run_db
 from components.pir import run_pir
-from components.dms import run_dms
+from components.ms import run_ms
 from components.dht import run_dht
-from lock import lock
+from locks import lock
 import time
 
 try:
@@ -29,7 +29,7 @@ def start_threads(settings, threads, stop_event, dl_queue, db_queue):
     #DPIR1
     run_pir(settings["DPIR1"], threads, stop_event)
     #DMS
-    run_dms(settings["DMS"], threads, stop_event)
+    run_ms(settings["DMS"], threads, stop_event)
     #RPIR1, RPIR2
     run_pir(settings["RPIR1"], threads, stop_event)
     run_pir(settings["RPIR2"], threads, stop_event)
