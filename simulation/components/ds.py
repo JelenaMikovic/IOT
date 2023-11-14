@@ -1,24 +1,30 @@
 from simulation.simulators.ds import run_ds_simulator
+from locks import lock 
 import threading
 import time
 
 def ds_callback():
     t = time.localtime()
-    print("="*20)
-    print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
+    with lock:       
+        print("="*20)
+        print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
 
 def run_ds(settings, threads, stop_event):
         if settings['simulated']:
-            print("Starting ds sumilator")
+            with lock:       
+                print("Starting DS sumilator")
             ds_thread = threading.Thread(target = run_ds_simulator, args=(2, ds_callback, stop_event))
             ds_thread.start()
             threads.append(ds_thread)
-            print("ds sumilator started")
+            with lock:       
+                print("DS sumilator started")
         else:
             from simulation.sensors.ds import run_ds_loop, DS
-            print("Starting ds loop")
+            with lock:       
+                print("Starting DS loop")
             ds = DS(settings['pin'])
             ds_thread = threading.Thread(target=run_ds_loop, args=(ds, 2, ds_callback, stop_event))
             ds_thread.start()
             threads.append(ds_thread)
-            print("ds loop started")
+            with lock:       
+                print("DS loop started")

@@ -95,4 +95,4 @@ def run_dht_loop(dht, delay, callback, stop_event):
 			callback(humidity, temperature, code)
 			if stop_event.is_set():
 					break
-			time.sleep(delay)  # Delay between readings
+			time.sleep(delay)

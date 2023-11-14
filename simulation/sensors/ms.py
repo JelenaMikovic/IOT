@@ -2,18 +2,17 @@ import RPi.GPIO as GPIO
 import time
 
 class MS(object):
-    def __init__(self):
-		self.R1 = 25
-		self.R2 = 8
-		self.R3 = 7
-		self.R4 = 1
+	def __init__(self, R1, R2, R3, R4, C1, C2, C3, C4):
+		self.R1 = R1
+		self.R2 = R2
+		self.R3 = R3
+		self.R4 = R4
 
-		self.C1 = 12
-		self.C2 = 16
-		self.C3 = 20
-		self.C4 = 21
+		self.C1 = C1
+		self.C2 = C2
+		self.C3 = C3
+		self.C4 = C4
 
-		# Initialize the GPIO pins
 		GPIO.setwarnings(False)
 		GPIO.setmode(GPIO.BCM)
 
@@ -21,8 +20,6 @@ class MS(object):
 		GPIO.setup(self.R2, GPIO.OUT)
 		GPIO.setup(self.R3, GPIO.OUT)
 		GPIO.setup(self.R4, GPIO.OUT)
-
-		# Make sure to configure the input pins to use the internal pull-down resistors
 
 		GPIO.setup(self.C1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 		GPIO.setup(self.C2, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
@@ -43,16 +40,15 @@ class MS(object):
 		GPIO.output(line, GPIO.LOW)
 
 	def key_press(self):
-		# call the readLine function for each row of the keypad
-        self.readLine(self.R1, ["1","2","3","A"])
-        self.readLine(self.R2, ["4","5","6","B"])
-        self.readLine(self.R3, ["7","8","9","C"])
-        self.readLine(self.R4, ["*","0","#","D"])
+		self.readLine(self.R1, ["1","2","3","A"])
+		self.readLine(self.R2, ["4","5","6","B"])
+		self.readLine(self.R3, ["7","8","9","C"])
+		self.readLine(self.R4, ["*","0","#","D"])
 
-    def run_ms_loop(ms, delay, callback, stop_event):
+	def run_ms_loop(ms, delay, callback, stop_event):
 		while True:
-			#check = pir.motion_detect()
-			ms.key_press()
+			key_pressed = ms.key_press()
+			callback(key_pressed)
 			if stop_event.is_set():
 					break
-			time.sleep(delay)  # Delay between readings
+			time.sleep(delay)

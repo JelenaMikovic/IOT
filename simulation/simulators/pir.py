@@ -12,10 +12,13 @@ def generate_values():
         yield detected
 
 
-
-def run_pir_simulator(delay, callback, stop_event):
-        for h, t in generate_values():
-            time.sleep(delay)  # Delay between readings (adjust as needed)
-            callback(h, t)
+def run_pir_simulator(delay, no_motion_detected_callback, motion_detected_callback, stop_event):
+        for value in generate_values():
+            if value:
+                motion_detected_callback()
+            else:
+                no_motion_detected_callback()
             if stop_event.is_set():
                   break
+            time.sleep(delay)
+

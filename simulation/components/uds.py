@@ -1,28 +1,31 @@
-from simulators.uds import run_dht_simulator
+from simulators.uds import run_uds_simulator
+from locks import lock 
 import threading
 import time
 
-def dht_callback(humidity, temperature, code):
+def uds_callback(distance):
     t = time.localtime()
-    print("="*20)
-    print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
-    print(f"Code: {code}")
-    print(f"Humidity: {humidity}%")
-    print(f"Temperature: {temperature}°C")
+    with lock:       
+        print("="*20)
+        print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
+        print(f"Distance: {distance}")
 
-
-def run_dht(settings, threads, stop_event):
+def run_uds(settings, threads, stop_event):
         if settings['simulated']:
-            print("Starting uds sumilator")
-            dht1_thread = threading.Thread(target = run_dht_simulator, args=(2, dht_callback, stop_event))
-            dht1_thread.start()
-            threads.append(dht1_thread)
-            print("Dht1 sumilator started")
+            with lock:
+                print("Starting UDS sumilator")
+            uds_thread = threading.Thread(target = run_uds_simulator, args=(2, uds_callback, stop_event))
+            uds_thread.start()
+            threads.append(uds_thread)
+            with lock:
+                print("UDS sumilator started")
         else:
-            from sensors.dht import run_dht_loop, DHT
-            print("Starting dht1 loop")
-            dht = DHT(settings['pin'])
-            dht1_thread = threading.Thread(target=run_dht_loop, args=(dht, 2, dht_callback, stop_event))
-            dht1_thread.start()
-            threads.append(dht1_thread)
-            print("Dht1 loop started")
+            from sensors.uds import run_uds_loop, UDS
+            with lock:
+                print("Starting UDS loop")
+            uds = UDS(settings['trig'], settings['echo'])
+            uds_thread = threading.Thread(target=run_uds_loop, args=(uds, 2, uds_callback, stop_event))
+            uds_thread.start()
+            threads.append(uds_thread)
+            with lock:
+                print("UDS loop started")

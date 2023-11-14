@@ -1,27 +1,37 @@
 from simulation.simulators.db import run_db_simulator
+from locks import lock
 import threading
 import time
 
-def ds_callback(code, open = True):
+def db_callback(active):
     t = time.localtime()
-    print("="*20)
-    print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
-    print(f"Code: {code}")
-    print(f"Open = {open}")
-
-def run_ds(settings, threads, stop_event):
-        if settings['simulated']:
-            print("Starting ds sumilator")
-            ds_thread = threading.Thread(target = run_db_simulator, args=(2, ds_callback, stop_event))
-            ds_thread.start()
-            threads.append(ds_thread)
-            print("ds sumilator started")
+    with lock:
+        print("="*20)
+        print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
+        if active:  
+            print(f"Doorbell is buzzing")
         else:
-            from simulation.sensors.db import run_ds_loop, DS
-            print("Starting ds loop")
-            ds = DS(settings['pin'])
-            db_thread = threading.Thread(target=run_db_loop, args=(ds, 2, ds_callback, stop_event))
-            ds_thread.start()
-            threads.append(ds_thread)
-            print("ds loop started")
+            print(f"Doorbell stopped buzzing")
+
+
+def run_db(settings, threads, stop_event, queue):
+        delay, pitch, duration = 1, 1000, 0.1
+        if settings['simulated']:
+            with lock:
+                print("Starting DB sumilator")
+            db_thread = threading.Thread(target = run_db_simulator, args=(queue, pitch, duration, db_callback, stop_event))
+            db_thread.start()
+            threads.append(db_thread)
+            with lock:
+                print("DB sumilator started")
+        else:
+            from simulation.sensors.db import run_db_loop, DB
+            with lock:
+                print("Starting DB loop")
+            db = DB(settings['pin'])
+            db_thread = threading.Thread(target=run_db_loop, args=(db, queue, pitch, duration, delay, stop_event))
+            db_thread.start()
+            threads.append(db_thread)
+            with lock:
+                print("DB loop started")
 

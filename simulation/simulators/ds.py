@@ -11,11 +11,10 @@ def generate_values():
             open = True
         yield open
 
-
-
 def run_ds_simulator(delay, callback, stop_event):
-        for h, t in generate_values():
-            time.sleep(delay)  # Delay between readings (adjust as needed)
-            callback(h, t)
-            if stop_event.is_set():
-                  break
+    for value in generate_values():
+        time.sleep(delay)
+        if value:
+            callback()
+        if stop_event.is_set():
+                break

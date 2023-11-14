@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO
+from locks import lock
 import time
 
 class PIR(object):
@@ -6,10 +7,12 @@ class PIR(object):
         self.PIR_PIN = pin
 
     def motion_detected_callback(channel=None):
-        print("You moved!")
+        with lock:
+            print("You moved!")
 
     def no_motion_callback(channel=None):
-        print("You stopped moving!")
+        with lock:
+            print("You stopped moving!")
 
     def motion_detect(self):
         GPIO.setmode(GPIO.BCM)
@@ -18,9 +21,9 @@ class PIR(object):
         GPIO.add_event_detect(self.PIR_PIN,GPIO.FALLING,callback=self.no_motion_callback)
 
 
-    def run_pir_loop(pir, delay, callback, stop_event):
-		while True:
-			check = pir.motion_detect()
-			if stop_event.is_set():
-					break
-			time.sleep(delay)  # Delay between readings
+    def run_pir_loop(pir, delay, stop_event):
+        while True:
+            pir.motion_detect()
+            if stop_event.is_set():
+                    break
+            time.sleep(delay)

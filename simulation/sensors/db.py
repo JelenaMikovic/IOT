@@ -1,22 +1,32 @@
+from queue import Empty
 import RPi.GPIO as GPIO
 import time
 
-class Button(object):
-    def __init__(self, port):
-        self.PORT_BUTTON = port
-
-    def button_pressed(self,event):
-        print("BUTTON PRESS DETECTED")
-
-    def detect_button_press(self):
+class DB(object):
+    def __init__(self, buzzer_pin = 17):
+        self.BUZZER_PIN = buzzer_pin
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.PORT_BUTTON, GPIO.IN, pull_up_down = GPIO.PUD_UP)
-        GPIO.add_event_detect(self.PORT_BUTTON, GPIO.RISING, callback =
-        self.button_pressed, bouncetime = 100)
+        GPIO.setup(self.BUZZER_PIN, GPIO.OUT)
 
-    def run_db_loop(ds, delay, callback, stop_event):
-		while True:
-			check = ds.readDHT11()
-			if stop_event.is_set():
-					break
-			time.sleep(delay)  # Delay between readings
+    def buzz(self, duration, pitch):
+        period = 1.0 / pitch
+        delay = period / 2
+        cycles = int(duration * pitch)
+        for i in range(cycles):
+            GPIO.output(self.BUZZER_PIN, True)
+            time.sleep(delay)
+            GPIO.output(self.BUZZER_PIN, False)
+            time.sleep(delay)
+
+    def run_db_loop(db, db_queue, pitch, duration, delay, stop_event):
+        while True:
+            try:
+                buzz = db_queue.get(timeout=1)
+                if buzz:
+                    db.buzz(pitch, duration)
+            except Empty:
+                pass
+            if stop_event.is_set():
+                GPIO.cleanup()
+                break
+            time.sleep(delay) 
