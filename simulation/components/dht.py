@@ -1,8 +1,8 @@
-from simulators.uds import run_uds_simulator
+from simulation.simulators.dht import run_dht_simulator
 import threading
 import time
 
-def uds_callback(humidity, temperature, code):
+def dht_callback(humidity, temperature, code):
     t = time.localtime()
     print("="*20)
     print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
@@ -11,18 +11,18 @@ def uds_callback(humidity, temperature, code):
     print(f"Temperature: {temperature}°C")
 
 
-def run_uds(settings, threads, stop_event):
+def run_dht(settings, threads, stop_event):
         if settings['simulated']:
             print("Starting uds sumilator")
-            uds_thread = threading.Thread(target = run_uds_simulator, args=(2, uds_callback, stop_event))
+            uds_thread = threading.Thread(target = run_dht_simulator, args=(2, dht_callback, stop_event))
             uds_thread.start()
             threads.append(uds_thread)
             print("uds sumilator started")
         else:
-            from sensors.uds import run_uds_loop, UDS
+            from simulation.sensors.dht import run_uds_loop, DHT
             print("Starting uds loop")
-            uds = UDS(settings['pin'])
-            uds_thread = threading.Thread(target=run_uds_loop, args=(uds, 2, uds_callback, stop_event))
-            uds_thread.start()
-            threads.append(uds_thread)
+            dht = DHT(settings['pin'])
+            dht_thread = threading.Thread(target=run_uds_loop, args=(dht, 2, dht_callback, stop_event))
+            dht_thread.start()
+            threads.append(dht_thread)
             print("uds loop started")
