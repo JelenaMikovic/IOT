@@ -11,9 +11,9 @@ def generate_values(initial_distance = 15):
       
 
 def run_uds_simulator(delay, callback, stop_event):
-        for h, t in generate_values():
+        for value in generate_values():
             time.sleep(delay)  # Delay between readings (adjust as needed)
-            callback(h, t)
+            callback(value)
             if stop_event.is_set():
                   break
               

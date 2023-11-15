@@ -71,7 +71,7 @@ if __name__ == "__main__":
     db_queue = Queue()
     try:
         start_threads(settings, threads, stop_event, dl_queue, db_queue)
-        user_input_thread(stop_event, threads, dl_queue, db_queue)
+        run_user_input_thread(stop_event, threads, dl_queue, db_queue)
         while True:
             time.sleep(1)
 

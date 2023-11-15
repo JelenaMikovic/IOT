@@ -1,4 +1,3 @@
-from simulation.simulators.ms import run_ms_simulator
 from locks import lock
 import threading
 import time
@@ -14,6 +13,7 @@ def run_ms(settings, threads, stop_event):
         if settings['simulated']:
             with lock:
                 print("Starting MS sumilator")
+            from simulators.ms import run_ms_simulator
             ms_thread = threading.Thread(target = run_ms_simulator, args=(2, ms_callback, stop_event))
             ms_thread.start()
             threads.append(ms_thread)

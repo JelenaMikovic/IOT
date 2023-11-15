@@ -1,4 +1,3 @@
-from simulation.simulators.ds import run_ds_simulator
 from locks import lock 
 import threading
 import time
@@ -13,6 +12,7 @@ def run_ds(settings, threads, stop_event):
         if settings['simulated']:
             with lock:       
                 print("Starting DS sumilator")
+            from simulators.ds import run_ds_simulator
             ds_thread = threading.Thread(target = run_ds_simulator, args=(2, ds_callback, stop_event))
             ds_thread.start()
             threads.append(ds_thread)

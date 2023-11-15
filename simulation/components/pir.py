@@ -1,21 +1,27 @@
-from simulation.simulators.pir import run_pir_simulator
 from locks import lock
 import threading
 import time
 
-def pir_callback(motion_detected):
-    if motion_detected:
-           t = time.localtime()
-           with lock:
-                print("="*20)
-                print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
-                print(f"Motion detected\n")
+def motion_detected_callback(channel=None):
+    t = time.localtime()
+    with lock:
+        print("="*20)
+        print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
+        print("You moved!")
+
+def no_motion_detected_callback(channel=None):
+    t = time.localtime()
+    with lock:
+        print("="*20)
+        print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
+        print("You stopped moving!")
 
 def run_pir(settings, threads, stop_event):
         if settings['simulated']:
             with lock:
                 print("Starting PIR sumilator")
-            pir_thread = threading.Thread(target = run_pir_simulator, args=(2, PIR.no_motion_detected_callback, PIR.motion_detected_callback, stop_event))
+            from simulators.pir import run_pir_simulator
+            pir_thread = threading.Thread(target = run_pir_simulator, args=(2, no_motion_detected_callback, motion_detected_callback, stop_event))
             pir_thread.start()
             threads.append(pir_thread)
             with lock:

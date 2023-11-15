@@ -1,4 +1,3 @@
-from simulators.uds import run_uds_simulator
 from locks import lock 
 import threading
 import time
@@ -14,6 +13,7 @@ def run_uds(settings, threads, stop_event):
         if settings['simulated']:
             with lock:
                 print("Starting UDS sumilator")
+            from simulators.uds import run_uds_simulator
             uds_thread = threading.Thread(target = run_uds_simulator, args=(2, uds_callback, stop_event))
             uds_thread.start()
             threads.append(uds_thread)

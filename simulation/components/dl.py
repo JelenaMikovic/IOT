@@ -1,4 +1,3 @@
-from simulation.simulators.dl import run_dl_simulator
 import threading
 from locks import lock
 import time
@@ -18,6 +17,7 @@ def run_dl(settings, threads, stop_event, queue):
         if settings['simulated']:
             with lock:
                 print("Starting DL sumilator")
+            from simulators.dl import run_dl_simulator
             dl_thread = threading.Thread(target = run_dl_simulator, args=(queue, 2, dl_callback, stop_event))
             dl_thread.start()
             threads.append(dl_thread)

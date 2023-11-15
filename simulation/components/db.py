@@ -1,4 +1,3 @@
-from simulation.simulators.db import run_db_simulator
 from locks import lock
 import threading
 import time
@@ -19,6 +18,7 @@ def run_db(settings, threads, stop_event, queue):
         if settings['simulated']:
             with lock:
                 print("Starting DB sumilator")
+            from simulators.db import run_db_simulator
             db_thread = threading.Thread(target = run_db_simulator, args=(queue, pitch, duration, db_callback, stop_event))
             db_thread.start()
             threads.append(db_thread)
