@@ -1,26 +1,37 @@
 {
     "DS1":{
+        "name": "DS1",
         "simulated": true,
-        "pin": 17
+        "pin": 17,
+        "runs_on": "PI1"
     },
     "DL":{
+        "name": "DL",
         "simulated": true,
-        "pin": 17
+        "pin": 17,
+        "runs_on": "PI1"
     },
     "DUS1": {
+        "name": "DUS1",
         "simulated": true,
         "echo": 17,
-        "trig": 4
+        "trig": 4,
+        "runs_on": "PI1"
     },
     "DB":{
+        "name": "DB",
         "simulated": true,
-        "pin": 17
+        "pin": 17,
+        "runs_on": "PI1"
     },
     "DPIR1":{
+        "name": "DPIR1",
         "simulated": true,
-        "pin": 17
+        "pin": 17,
+        "runs_on": "PI1"
     },
     "DMS":{
+        "name": "DMS",
         "simulated": true,
         "R1": 25,
         "R2": 8,
@@ -29,22 +40,31 @@
         "C1": 12,
         "C2": 16,
         "C3": 20,
-        "C4": 21
+        "C4": 21,
+        "runs_on": "PI1"
     },
     "RPIR1":{
+        "name": "RPIR1",
         "simulated": true,
-        "pin": 17
+        "pin": 17,
+        "runs_on": "PI1"
     },
     "RPIR2":{
+        "name": "RPIR2",
         "simulated": true,
-        "pin": 17
+        "pin": 17,
+        "runs_on": "PI1"
     },
     "RDHT1":{
+        "name": "RDHT1",
         "simulated": true,
-        "pin": 17
+        "pin": 17,
+        "runs_on": "PI1"
     },
     "RDHT2":{
+        "name": "RDHT2",
         "simulated": true,
-        "pin": 17
+        "pin": 17,
+        "runs_on": "PI1"
     }
 }
