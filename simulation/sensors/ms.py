@@ -45,10 +45,10 @@ class MS(object):
 		self.readLine(self.R3, ["7","8","9","C"])
 		self.readLine(self.R4, ["*","0","#","D"])
 
-	def run_ms_loop(ms, delay, callback, stop_event):
+	def run_ms_loop(ms, delay, callback, stop_event, publish_event, settings):
 		while True:
 			key_pressed = ms.key_press()
-			callback(key_pressed)
+			callback(key_pressed, publish_event, settings)
 			if stop_event.is_set():
 					break
 			time.sleep(delay)
