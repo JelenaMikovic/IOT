@@ -23,7 +23,7 @@ def on_connect(client: mqtt.Client, userdata: any, flags, result_code):
     client.subscribe("topic/dht/humidity")
     client.subscribe("topic/dl/")
     client.subscribe("topic/ds/")
-    client.subscribe("topic/ms/")
+    client.subscribe("topic/ms/keypressed")
     client.subscribe("topic/pir/movement")
     client.subscribe("topic/uds/")
 

@@ -8,9 +8,9 @@ def generate_values():
             yield keys[random.randint(0, len(keys) - 1)]
 
 
-def run_ms_simulator(delay, callback, stop_event):
+def run_ms_simulator(delay, callback, stop_event,  publish_event, settings):
         for value in generate_values():
             time.sleep(delay)
-            callback(value)
+            callback(value, publish_event, settings)
             if stop_event.is_set():
                   break
