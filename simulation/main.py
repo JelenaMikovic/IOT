@@ -19,13 +19,13 @@ except:
 
 def start_threads(settings, threads, stop_event, dl_queue, db_queue):
     #DS1
-    # run_ds(settings["DS1"], threads, stop_event)
-    # #DL
-    # run_dl(settings["DL"], threads, stop_event, dl_queue)
-    # #DUS1
+    run_ds(settings["DS1"], threads, stop_event)
+    #DL
+    run_dl(settings["DL"], threads, stop_event, dl_queue)
+    #DUS1
     # run_uds(settings["DUS1"], threads, stop_event)
-    #DB
-    run_db(settings["DB"], threads, stop_event, db_queue)
+    # #DB
+    # run_db(settings["DB"], threads, stop_event, db_queue)
     #DPIR1
     # run_pir(settings["DPIR1"], threads, stop_event)
     # #DMS

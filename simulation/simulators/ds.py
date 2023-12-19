@@ -11,10 +11,10 @@ def generate_values():
             open = True
         yield open
 
-def run_ds_simulator(delay, callback, stop_event):
+def run_ds_simulator(delay, callback, stop_event, publish_event, settings):
     for value in generate_values():
         time.sleep(delay)
         if value:
-            callback()
+            callback(publish_event, settings)
         if stop_event.is_set():
                 break

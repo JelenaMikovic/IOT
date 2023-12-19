@@ -15,7 +15,7 @@ class DS(object):
     def detect_button_press(self):
         GPIO.add_event_detect(self.PORT_BUTTON, GPIO.RISING, callback = self.button_pressed, bouncetime = 100)
 
-    def run_ds_loop(db, delay, callback, stop_event):
+    def run_ds_loop(db, delay, callback, stop_even, publish_event, settingst):
         while True:
             db.detect_button_press()
             if stop_event.is_set():
