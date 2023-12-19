@@ -7,7 +7,7 @@ import json
 app = Flask(__name__)
 
 # InfluxDB Configuration
-token = "94qWOH0wxeFMQxAUp3DfcQXeGURIIl5KudjZZdWC5bQcWTEniZyUib2vm8isbktznjpyF_PhK_7-McGoG0dW2A=="
+token = "0U_1-rRg4t59bja0vIqDB6jghIc4vayimVm7nQhrO3NyM11v2gfWH1fVCxHx9VbPKJm2wdhjY380gyWVx_APlg=="
 org = "iot"
 url = "http://localhost:8086"
 bucket = "measurements"
@@ -24,7 +24,7 @@ def on_connect(client: mqtt.Client, userdata: any, flags, result_code):
     client.subscribe("topic/dl/")
     client.subscribe("topic/ds/")
     client.subscribe("topic/ms/")
-    client.subscribe("topic/pir/")
+    client.subscribe("topic/pir/movement")
     client.subscribe("topic/uds/")
 
 
