@@ -17,9 +17,10 @@ influxdb_client = InfluxDBClient(url=url, token=token, org=org)
 mqtt_client = mqtt.Client()
 
 def on_connect(client: mqtt.Client, userdata: any, flags, result_code):
-    print("Connected with result code "+str(result_code))
+    print("Connected with result code " + str(result_code))
     client.subscribe("topic/db/")
-    client.subscribe("topic/dht/")
+    client.subscribe("topic/dht/temperature")
+    client.subscribe("topic/dht/humidity")
     client.subscribe("topic/dl/")
     client.subscribe("topic/ds/")
     client.subscribe("topic/ms/")
@@ -35,13 +36,16 @@ def save_to_db(data, verbose=True):
             .tag("simulated", data["simulated"])
             .tag("runs_on", data["runs_on"])
             .tag("name", data["name"])
-            .field(data["field"], data["value"])
+            .field("measurement", data["value"])
         )
-        write_api.write(bucket=data["bucket"], org=org, record=point)
+        print(point)
+        write_api.write(bucket, org=org, record=point)
         if verbose:
             print("Got message: " + json.dumps(data))
-    except:
-        pass
+    except Exception as e:
+    # Handle the exception and retrieve the exception message using args
+        exception_message = str(e)
+        print(exception_message)
 
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = lambda client, userdata, msg: save_to_db(json.loads(msg.payload.decode('utf-8')))
