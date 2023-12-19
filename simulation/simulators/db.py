@@ -3,12 +3,12 @@ from locks import lock
 import time
 import random
 
-def run_db_simulator(queue, pitch, duration, callback, stop_event):
+def run_db_simulator(queue, pitch, duration, callback, stop_event, publish_event, settings):
     while not stop_event.is_set():
         try:
             action = queue.get(timeout=1)
             if action:
-                callback(True)
+                callback(True, publish_event, settings)
                 period = 1.0 / pitch
                 delay = period / 2
                 cycles = int(duration * pitch) 
@@ -29,7 +29,7 @@ def run_db_simulator(queue, pitch, duration, callback, stop_event):
                         time.sleep(delay)
                         if stop_event.is_set():
                             break
-                callback(False)
+                callback(False, publish_event, settings)
         except Empty:
             pass
 

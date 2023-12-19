@@ -18,7 +18,7 @@ class DB(object):
             GPIO.output(self.BUZZER_PIN, False)
             time.sleep(delay)
 
-    def run_db_loop(db, db_queue, pitch, duration, delay, stop_event):
+    def run_db_loop(db, db_queue, pitch, duration, delay, stop_event, publish_event, settings):
         while True:
             try:
                 buzz = db_queue.get(timeout=1)

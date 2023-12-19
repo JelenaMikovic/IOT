@@ -18,7 +18,7 @@ mqtt_client = mqtt.Client()
 
 def on_connect(client: mqtt.Client, userdata: any, flags, result_code):
     print("Connected with result code " + str(result_code))
-    client.subscribe("topic/db/")
+    client.subscribe("topic/db/buzz")
     client.subscribe("topic/dht/temperature")
     client.subscribe("topic/dht/humidity")
     client.subscribe("topic/dl/")

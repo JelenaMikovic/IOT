@@ -19,23 +19,23 @@ except:
 
 def start_threads(settings, threads, stop_event, dl_queue, db_queue):
     #DS1
-    run_ds(settings["DS1"], threads, stop_event)
-    #DL
-    run_dl(settings["DL"], threads, stop_event, dl_queue)
-    #DUS1
-    run_uds(settings["DUS1"], threads, stop_event)
+    # run_ds(settings["DS1"], threads, stop_event)
+    # #DL
+    # run_dl(settings["DL"], threads, stop_event, dl_queue)
+    # #DUS1
+    # run_uds(settings["DUS1"], threads, stop_event)
     #DB
     run_db(settings["DB"], threads, stop_event, db_queue)
     #DPIR1
-    run_pir(settings["DPIR1"], threads, stop_event)
-    #DMS
-    run_ms(settings["DMS"], threads, stop_event)
-    #RPIR1, RPIR2
-    run_pir(settings["RPIR1"], threads, stop_event)
-    run_pir(settings["RPIR2"], threads, stop_event)
-    #RDHT1, RDHT2
-    run_dht(settings["RDHT1"], threads, stop_event)
-    run_dht(settings["RDHT2"], threads, stop_event)
+    # run_pir(settings["DPIR1"], threads, stop_event)
+    # #DMS
+    # run_ms(settings["DMS"], threads, stop_event)
+    # #RPIR1, RPIR2
+    # run_pir(settings["RPIR1"], threads, stop_event)
+    # run_pir(settings["RPIR2"], threads, stop_event)
+    # #RDHT1, RDHT2
+    # run_dht(settings["RDHT1"], threads, stop_event)
+    # run_dht(settings["RDHT2"], threads, stop_event)
 
 def user_input_thread(stop_event, dl_queue, db_queue):
     while True:
