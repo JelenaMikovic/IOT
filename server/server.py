@@ -25,7 +25,7 @@ def on_connect(client: mqtt.Client, userdata: any, flags, result_code):
     client.subscribe("topic/ds/")
     client.subscribe("topic/ms/")
     client.subscribe("topic/pir/")
-    client.subscribe("topic/uds/")
+    client.subscribe("topic/uds/distance")
 
 
 def save_to_db(data, verbose=True):

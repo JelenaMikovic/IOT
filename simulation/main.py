@@ -64,7 +64,7 @@ if __name__ == "__main__":
                 'O' - turn on DL
                 'F' - turn off DL
                 'B' - DB """)
-    settings = load_settings()
+    settings = load_settings("simulation/settings.json")
     threads = []
     stop_event = threading.Event()
     dl_queue = Queue()
