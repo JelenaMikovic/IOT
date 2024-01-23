@@ -79,6 +79,7 @@
         "pin": 17,
         "runs_on": "PI1"
     },
+<<<<<<< Updated upstream
     "RDHT4":{
         "name": "RDHT4",
         "simulated": true,
@@ -105,5 +106,58 @@
         "green_pin": 13,
         "blue_pin": 19,
         "runs_on": "PI3"
+=======
+
+
+
+    "DS2":{
+        "name": "DS2",
+        "simulated": true,
+        "pin": 17,
+        "runs_on": "PI2"
+    },
+    "DUS2": {
+        "name": "DUS2",
+        "simulated": true,
+        "echo": 17,
+        "trig": 4,
+        "runs_on": "PI2"
+    },
+    "DPIR2":{
+        "name": "DPIR2",
+        "simulated": true,
+        "pin": 17,
+        "runs_on": "PI2"
+    },
+    "GDHT":{
+        "name": "GDHT",
+        "simulated": true,
+        "pin": 17,
+        "runs_on": "PI2"
+    },
+    "GLCD":{
+        "name": "GLCD",
+        "simulated": true,
+        "pin": 17,
+        "runs_on": "PI2"
+    },
+    "GSG":{
+        "name": "GSG",
+        "simulated": true,
+        "pin": 17,
+        "runs_on": "PI2"
+    },
+    "RPIR3":{
+        "name": "RPIR3",
+        "simulated": true,
+        "pin": 17,
+        "runs_on": "PI2"
+    },
+    "RDHT3":{
+        "name": "RDHT3",
+        "simulated": true,
+        "pin": 17,
+        "runs_on": "PI2"
+>>>>>>> Stashed changes
     }
 }

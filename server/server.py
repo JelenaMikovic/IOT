@@ -13,7 +13,7 @@ CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*") 
 
 # InfluxDB Configuration
-token = "0U_1-rRg4t59bja0vIqDB6jghIc4vayimVm7nQhrO3NyM11v2gfWH1fVCxHx9VbPKJm2wdhjY380gyWVx_APlg=="
+token = "DyyA4waY92fqqL4sVcps8EI1_Mb4tKR_6WqfSOYuCy_7cZUUhZW0H_7YubRUYNXbhfs_i7gpOjhiZJs9lcQ0JA=="
 org = "iot"
 url = "http://localhost:8086"
 bucket = "measurements"
