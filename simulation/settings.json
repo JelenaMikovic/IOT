@@ -79,7 +79,6 @@
         "pin": 17,
         "runs_on": "PI1"
     },
-<<<<<<< Updated upstream
     "RDHT4":{
         "name": "RDHT4",
         "simulated": true,
@@ -106,10 +105,7 @@
         "green_pin": 13,
         "blue_pin": 19,
         "runs_on": "PI3"
-=======
-
-
-
+    },
     "DS2":{
         "name": "DS2",
         "simulated": true,
@@ -158,6 +154,5 @@
         "simulated": true,
         "pin": 17,
         "runs_on": "PI2"
->>>>>>> Stashed changes
     }
 }
