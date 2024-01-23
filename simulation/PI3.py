@@ -8,6 +8,7 @@ from components.db import run_db
 from components.pir import run_pir
 from components.ms import run_ms
 from components.dht import run_dht
+from components.b4sd import run_b4sd
 from locks import lock
 import time
 
@@ -25,7 +26,7 @@ def start_threads(settings, threads, stop_event, dl_queue, db_queue):
     # DB
     run_db(settings["BB"], threads, stop_event, db_queue)
     # B4SD
-    
+    run_b4sd(settings["B4SD"], threads, stop_event,)
     # BIR
 
     # BRGB
@@ -58,7 +59,7 @@ if __name__ == "__main__":
                 'O' - turn on DL
                 'F' - turn off DL
                 'B' - DB """)
-    settings = load_settings("./settings.json")
+    settings = load_settings("simulation/settings.json")
     threads = []
     stop_event = threading.Event()
     dl_queue = Queue()

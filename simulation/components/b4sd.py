@@ -28,6 +28,7 @@ publisher_thread.daemon = True
 publisher_thread.start()
 
 def b4sd_callback(settings, segment, publish_event):
+    global publish_data_counter, publish_data_limit
     b4sd_payload ={
         "measurement": "Segment",
         "simulated": settings['simulated'],
@@ -45,6 +46,7 @@ def b4sd_callback(settings, segment, publish_event):
     
 def run_b4sd(settings, threads, stop_event):
     if settings['simulated']:
+        from simulators.b4sd import run_b4sd_simulator
         print("Starting B4SD simulator")
         b4sd_thread = threading.Thread(target=run_b4sd_simulator, args=(settings, stop_event, b4sd_callback, publish_event))
         b4sd_thread.start()
@@ -53,8 +55,8 @@ def run_b4sd(settings, threads, stop_event):
     else:
         from sensors.b4sd import B4sd
         print("Starting B4SD loop")
-        b4sd = B4sd(settings, stop_event, b4sd_callback)
-        b4sd_thread = threading.Thread(target=b4sd.run(), args=(settings, stop_event, b4sd_callback, publish_event))
+        b4sd = B4sd(settings)
+        b4sd_thread = threading.Thread(target=b4sd.run_b4sd_loop(), args=(settings, stop_event, b4sd_callback, publish_event))
         b4sd_thread.start()
         threads.append(b4sd_thread)
         print("B4SD loop started")

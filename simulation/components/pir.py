@@ -14,6 +14,21 @@ counter_lock = threading.Lock()
 
 mqtt_client = mqtt.Client()
 mqtt_client.connect(HOSTNAME, 1883, 60)
+mqtt_client.subscribe("DUS1")
+mqtt_client.subscribe("DUS2")
+mqtt_client.on_message = lambda client, userdata, message: motion_detected(message)
+mqtt_client.loop_start() 
+people_count = 0
+
+def motion_detected(message):
+    global people_count
+    if message.payload.decode("utf-8") == "coming":
+        people_count += 1
+    else:
+        people_count -= 1
+        if people_count < 0:
+            people_count = 0
+    print(people_count)
 
 def publisher_task(event, pir_batch):
     global publish_data_counter, publish_data_limit
@@ -55,8 +70,14 @@ def motion_detected_callback(publish_event, pir_settings, verbose=False):
 
     if publish_data_counter >= publish_data_limit:
         publish_event.set()
-    
+
     mqtt_client.publish(pir_settings['name'], "motion")
+
+    time.sleep(1)
+
+    global people_count
+    if 'RPIR' in pir_settings['name'] and people_count == 0:
+        mqtt_client.publish('topic/alarm', "on")
 
 def no_motion_detected_callback(publish_event, pir_settings, verbose=False):
     global publish_data_counter, publish_data_limit, pir_batch

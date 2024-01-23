@@ -5,7 +5,9 @@ class UDS(object):
     def __innit__(self, TRIG_PIN, ECHO_PIN):
         self.TRIG_PIN = TRIG_PIN
         self.ECHO_PIN = ECHO_PIN
-
+        self.mqtt_client = mqtt.Client()
+        self.mqtt_client.connect(HOSTNAME, 1883, 60)
+        self.mqtt_client.loop_start()
     
     def get_distance(self):
         GPIO.output(self.TRIG_PIN, False)
@@ -37,9 +39,20 @@ class UDS(object):
         return distance
 
 def run_uds_loop(uds, delay, callback, stop_event, publish_event, settings):
-		while True:
-			distance = uds.get_distance()
-			callback(distance, publish_event, settings)
-			if stop_event.is_set():
-					break
-			time.sleep(delay)
+    if(settings['name'] == "DUS1"):
+        uds.mqtt_client.subscribe("DPIR1")
+    if(settings['name'] == "DUS2"):
+        uds.mqtt_client.subscribe("DPIR2")
+    while True:
+        first_distance = uds.get_distance()
+        callback(first_distance, publish_event, settings)
+        time.sleep(delay)
+        second_distance = uds.get_distance()
+        callback(second_distance, publish_event, settings)
+        if(first_distance < second_distance):
+            uds.mqtt_client.publish(settings['name'], "going")
+        else:
+            uds.mqtt_client.publish(settings['name'], "coming")
+        if stop_event.is_set():
+                break
+        time.sleep(delay)

@@ -83,5 +83,16 @@ def alarm_off():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)})
 
+@app.route('/rgb', methods=['POST'])
+def set_rgb_mode():
+    try:
+        data = request.get_json()
+        mode = data.get('mode')
+        mqtt_client.publish("topic/rgb", mode)
+        return jsonify({"status": "success"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)})
+
+
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)
