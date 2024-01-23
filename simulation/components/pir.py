@@ -3,6 +3,7 @@ from locks import lock
 import threading
 import time
 import json
+import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
 from broker_settings import HOSTNAME, PORT
 
@@ -10,6 +11,9 @@ pir_batch = []
 publish_data_counter = 0
 publish_data_limit = 5
 counter_lock = threading.Lock()
+
+mqtt_client = mqtt.Client()
+mqtt_client.connect(HOSTNAME, 1883, 60)
 
 def publisher_task(event, pir_batch):
     global publish_data_counter, publish_data_limit
@@ -51,9 +55,8 @@ def motion_detected_callback(publish_event, pir_settings, verbose=False):
 
     if publish_data_counter >= publish_data_limit:
         publish_event.set()
-
-
-
+    
+    mqtt_client.publish(pir_settings['name'], "motion")
 
 def no_motion_detected_callback(publish_event, pir_settings, verbose=False):
     global publish_data_counter, publish_data_limit, pir_batch
@@ -84,7 +87,7 @@ def run_pir(settings, threads, stop_event):
             with lock:
                 print("Starting PIR sumilator")
             from simulators.pir import run_pir_simulator
-            pir_thread = threading.Thread(target = run_pir_simulator, args=(2, no_motion_detected_callback, motion_detected_callback, stop_event, publish_event, settings))
+            pir_thread = threading.Thread(target = run_pir_simulator, args=(5, no_motion_detected_callback, motion_detected_callback, stop_event, publish_event, settings))
             pir_thread.start()
             threads.append(pir_thread)
             with lock:

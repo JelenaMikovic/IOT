@@ -4,8 +4,8 @@ import random
 def generate_values():
     detected= True
     while True:
-        a = random.randint(1,10)
-        if(a>5):
+        a = random.randint(1,100)
+        if(a>15):
             detected = False
         else:
             detected = True

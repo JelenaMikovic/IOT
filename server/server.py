@@ -4,7 +4,13 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 import paho.mqtt.client as mqtt
 import json
 
+from flask_cors import CORS 
+from flask_socketio import SocketIO, emit  
+
+
 app = Flask(__name__)
+CORS(app)
+socketio = SocketIO(app, cors_allowed_origins="*") 
 
 # InfluxDB Configuration
 token = "0U_1-rRg4t59bja0vIqDB6jghIc4vayimVm7nQhrO3NyM11v2gfWH1fVCxHx9VbPKJm2wdhjY380gyWVx_APlg=="
@@ -12,7 +18,6 @@ org = "iot"
 url = "http://localhost:8086"
 bucket = "measurements"
 influxdb_client = InfluxDBClient(url=url, token=token, org=org)
-
 
 mqtt_client = mqtt.Client()
 
@@ -26,31 +31,57 @@ def on_connect(client: mqtt.Client, userdata: any, flags, result_code):
     client.subscribe("topic/uds/distance")
     client.subscribe("topic/ms/keypressed")
     client.subscribe("topic/pir/movement")
-
+    client.subscribe("topic/b4sd/segment")
+    client.subscribe("topic/alarm")
 
 def save_to_db(data, verbose=True):
     write_api = influxdb_client.write_api(write_options=SYNCHRONOUS)
-    try:
-        point = (
-            Point(data["measurement"])
-            .tag("simulated", data["simulated"])
-            .tag("runs_on", data["runs_on"])
-            .tag("name", data["name"])
-            .field("measurement", data["value"])
-        )
-        print(point)
-        write_api.write(bucket, org=org, record=point)
-        if verbose:
-            print("Got message: " + json.dumps(data))
-    except Exception as e:
-    # Handle the exception and retrieve the exception message using args
-        exception_message = str(e)
-        print(exception_message)
+    if(msg.topic == "topic/alarm"):
+        point = (Point("alarm").field("measurement", msg.payload.decode("utf-8")))
+        write_api.write(bucket=bucket, org=org, record=point)
+        if msg.payload.decode("utf-8") == "on":
+            socketio.emit('alarm', "on")
+        else :
+            socketio.emit('alarm', "off")
+    else:
+        try:
+            point = (
+                Point(data["measurement"])
+                .tag("simulated", data["simulated"])
+                .tag("runs_on", data["runs_on"])
+                .tag("name", data["name"])
+                .field("measurement", data["value"])
+            )
+            print(point)
+            write_api.write(bucket, org=org, record=point)
+            if verbose:
+                print("Got message: " + json.dumps(data))
+        except Exception as e:
+            exception_message = str(e)
+            print(exception_message)
 
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = lambda client, userdata, msg: save_to_db(json.loads(msg.payload.decode('utf-8')))
 mqtt_client.connect("localhost", 1883, 60)
 mqtt_client.loop_start()
+
+@app.route('/store_data', methods=['POST'])
+def store_data():
+    try:
+        data = request.get_json()
+        store_data(data)
+        return jsonify({"status": "success"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)})
+
+
+@app.route('/alarm', methods=['GET'])
+def alarm_off():
+    try:
+        mqtt_client.publish("topic/alarm", "off")
+        return jsonify({"status": "success"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)})
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)
