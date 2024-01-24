@@ -5,7 +5,17 @@ from broker_settings import HOSTNAME, PORT
 
 mqtt_client = mqtt.Client()
 mqtt_client.connect(HOSTNAME, 1883, 60)
+mqtt_client.subscribe("topic/system")
+mqtt_client.on_message = lambda client, userdata, message: on_message(message)
 mqtt_client.loop_start()
+system = False
+
+def motion_detected(message):
+    global system
+    if message.payload.decode("utf-8") == "active":
+        system = True
+    elif message.payload.decode("utf-8") == "deactive":
+        system = False
 
 def generate_values():
     open = True
@@ -20,7 +30,7 @@ def generate_values():
 def run_ds_simulator(delay, callback, stop_event, publish_event, settings):
     for value in generate_values():
         time.sleep(delay)
-        if value:
+        if value and system:
             callback(publish_event, settings)
             a = random.randint(1,8)
             if a >= 5:

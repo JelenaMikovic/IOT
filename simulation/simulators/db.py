@@ -8,18 +8,25 @@ from broker_settings import HOSTNAME, PORT
 mqtt_client = mqtt.Client()
 mqtt_client.connect(HOSTNAME, 1883, 60)
 mqtt_client.loop_start()
-#mqtt_client.subscribe("topic/alarm")
+mqtt_client.subscribe("topic/alarm")
+mqtt_client.subscribe("topic/system")
 buzzing = False
+system = False
 
 def on_message(callback, publish_event, settings, message):
-    global buzzing
+    global buzzing, system
     action = message.payload.decode("utf-8")
-    if action == "on":
-        buzzing = True
-        callback(True, publish_event, settings)
-    elif action == "off":
-        buzzing = False
-        callback(False, publish_event, settings)
+    if system:
+        if action == "on":
+            buzzing = True
+            callback(True, publish_event, settings)
+        elif action == "off":
+            buzzing = False
+            callback(False, publish_event, settings)
+    if action == "active":
+        system = True
+    elif action == "deactive":
+        system = False
 
 def run_db_simulator(queue, pitch, duration, callback, stop_event, publish_event, settings):
     mqtt_client.on_message = lambda client, userdata, message: on_message(callback, publish_event, settings, message)

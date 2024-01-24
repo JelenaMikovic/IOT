@@ -12,20 +12,32 @@ class DS(object):
         self.button_pressed_time = 0
         self.mqtt_client = mqtt.Client()
         self.mqtt_client.connect(HOSTNAME, 1883, 60)
+        self.mqtt_client.subscribe("topic/system")
+        self.mqtt_client.on_message = self.on_message
         self.mqtt_client.loop_start()
+        self.system = False
+
+    def on_message(self, callback, publish_event, settings, message):
+            action = message.payload.decode("utf-8")
+            if action == "active":
+                this.system = True
+            elif action == "deactive":
+                this.system = False
 
     def button_pressed(self, event):
         with lock:
-            print("BUTTON PRESS DETECTED")
-            self.button_pressed_time = time.time()  
+            if this.system:
+                print("BUTTON PRESS DETECTED")
+                self.button_pressed_time = time.time()  
 
     def button_released(self, event):
         with lock:
-            print("BUTTON RELEASED")
-            if time.time() - self.button_pressed_time >= 5:
-                mqtt_client.publish("topic/alarm", "on")
-            else:
-                mqtt_client.publish("topic/alarm", "off")
+            if this.system:
+                print("BUTTON RELEASED")
+                if time.time() - self.button_pressed_time >= 5:
+                    mqtt_client.publish("topic/alarm", "on")
+                else:
+                    mqtt_client.publish("topic/alarm", "off")
 
     def detect_button_press(self):
         GPIO.add_event_detect(self.PORT_BUTTON, GPIO.RISING, callback=self.button_pressed, bouncetime=100)

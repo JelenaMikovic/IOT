@@ -16,19 +16,24 @@ mqtt_client = mqtt.Client()
 mqtt_client.connect(HOSTNAME, 1883, 60)
 mqtt_client.subscribe("DUS1")
 mqtt_client.subscribe("DUS2")
+mqtt_client.subscribe("topic/system")
 mqtt_client.on_message = lambda client, userdata, message: motion_detected(message)
 mqtt_client.loop_start() 
 people_count = 0
+system = False
 
 def motion_detected(message):
-    global people_count
+    global people_count, system
     if message.payload.decode("utf-8") == "coming":
         people_count += 1
-    else:
+    elif message.payload.decode("utf-8") == "going":
         people_count -= 1
         if people_count < 0:
             people_count = 0
-    print(people_count)
+    elif message.payload.decode("utf-8") == "active":
+        system = True
+    elif message.payload.decode("utf-8") == "deactive":
+        system = False
 
 def publisher_task(event, pir_batch):
     global publish_data_counter, publish_data_limit
@@ -76,7 +81,7 @@ def motion_detected_callback(publish_event, pir_settings, verbose=False):
     time.sleep(1)
 
     global people_count
-    if 'RPIR' in pir_settings['name'] and people_count == 0:
+    if 'RPIR' in pir_settings['name'] and people_count == 0 and system:
         mqtt_client.publish('topic/alarm', "on")
 
 def no_motion_detected_callback(publish_event, pir_settings, verbose=False):

@@ -38,17 +38,23 @@ class MS(object):
 		if(GPIO.input(self.C4) == 1):
 			return (characters[3])
 		GPIO.output(line, GPIO.LOW)
-
-	def key_press(self):
-		self.readLine(self.R1, ["1","2","3","A"])
-		self.readLine(self.R2, ["4","5","6","B"])
-		self.readLine(self.R3, ["7","8","9","C"])
-		self.readLine(self.R4, ["*","0","#","D"])
-
-	def run_ms_loop(ms, delay, callback, stop_event, publish_event, settings):
-		while True:
-			key_pressed = ms.key_press()
-			callback(key_pressed, publish_event, settings)
-			if stop_event.is_set():
-					break
-			time.sleep(delay)
+	
+	def key_press(self, pin_length):
+		pin = ""
+		while len(pin) < pin_length:
+			for line, characters in zip([self.R1, self.R2, self.R3, self.R4], [["1", "2", "3", "A"], ["4", "5", "6", "B"], ["7", "8", "9", "C"], ["*", "0", "#", "D"]]):
+				key = self.readLine(line, characters)
+				if key:
+					pin += key
+					print(f"Entered digits: {pin}")
+					time.sleep(0.2)        
+		return pin
+		
+	def run_ms_loop(self, delay, callback, stop_event, publish_event, settings):
+        pin_length = 4  
+        while True:
+            pin_entered = self.key_press(pin_length)
+            callback(pin_entered, publish_event, settings)
+            if stop_event.is_set():
+                break
+            time.sleep(delay)

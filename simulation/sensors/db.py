@@ -13,18 +13,25 @@ class DB(object):
         self.mqtt_client = mqtt.Client()
         self.mqtt_client.connect(HOSTNAME, 1883, 60)
         self.mqtt_client.on_message = self.on_message
-        self.mqtt_client.loop_start()
         self.mqtt_client.subscribe("topic/alarm")
+        self.mqtt_client.subscribe("topic/system")
+        self.mqtt_client.loop_start()
         self.buzzing = False
+        self.system = False
 
     def on_message(self, callback, publish_event, settings, message):
         action = message.payload.decode("utf-8")
-        if action == "on":
-            self.start_buzz()
-            callback(True, publish_event, settings)
-        elif action == "off":
-            self.stop_buzz()
-            callback(False, publish_event, settings)
+        if this.system:
+            if action == "on":
+                self.start_buzz()
+                callback(True, publish_event, settings)
+            elif action == "off":
+                self.stop_buzz()
+                callback(False, publish_event, settings)
+        if action == "active":
+            this.system = True
+        elif action == "deactive":
+            this.system = False
 
     def buzz(self, pitch, duration):
         period = 1.0 / pitch
