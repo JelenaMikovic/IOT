@@ -44,7 +44,7 @@ def publisher_task(event, pir_batch):
             publish_data_counter = 0
             pir_batch.clear()
         publish.multiple(local_pir_batch, hostname=HOSTNAME, port=PORT)
-        print(f'published {publish_data_limit} pir values')
+        #print(f'published {publish_data_limit} pir values')
         event.clear()
 
 publish_event = threading.Event()
@@ -80,7 +80,7 @@ def motion_detected_callback(publish_event, pir_settings, verbose=False):
 
     time.sleep(1)
 
-    global people_count
+    global people_count, system
     if 'RPIR' in pir_settings['name'] and people_count == 0 and system:
         mqtt_client.publish('topic/alarm', "on")
 

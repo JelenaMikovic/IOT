@@ -27,6 +27,7 @@ def on_message(callback, publish_event, settings, message):
         system = True
     elif action == "deactive":
         system = False
+        buzzing = False
 
 def run_db_simulator(queue, pitch, duration, callback, stop_event, publish_event, settings):
     mqtt_client.on_message = lambda client, userdata, message: on_message(callback, publish_event, settings, message)
@@ -36,9 +37,9 @@ def run_db_simulator(queue, pitch, duration, callback, stop_event, publish_event
             if buzzing:
                 period = 1.0 / pitch
                 delay = period / 2
-                cycles = int(duration * pitch) 
+                cycles = int(1 * pitch) 
                 with lock:
-                    for _ in range(cycles):
+                    for _ in range(10):
                         start = time.time()
                         while True:
                             if time.time() - start > delay:

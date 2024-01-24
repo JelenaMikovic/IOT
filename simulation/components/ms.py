@@ -25,7 +25,7 @@ def publisher_task(event, ms_batch):
             publish_data_counter = 0
             ms_batch.clear()
         publish.multiple(local_ms_batch, hostname=HOSTNAME, port=PORT)
-        print(f'published {publish_data_limit} ms values')
+        # {publish_data_limit} ms values')
         event.clear()
 
 publish_event = threading.Event()
@@ -50,13 +50,18 @@ def ms_callback(key_pressed, publish_event, ms_settings, verbose=False):
     }
 
     if(system != key_pressed):
-        time.sleep(10)
-        mqtt_client.publish('topic/alarm', "on")
-    elif(pin != key_pressed):
-        mqtt_client.publish('topic/alarm', "off")
-        mqtt_client.publish('topic/system', "deactive")
+        if(pin == key_pressed):
+            mqtt_client.publish('topic/alarm', "off")
+            mqtt_client.publish('topic/system', "deactive")
+            print("deactive")
+        else:
+            time.sleep(10)
+            mqtt_client.publish('topic/system', "active")
+            mqtt_client.publish('topic/alarm', "on")
+            print("alrmmm")
     else:
         mqtt_client.publish('topic/system', "active")
+        print("active")
 
     with counter_lock:
         ms_batch.append(("topic/ms/keypressed", json.dumps(key_payload), 0, True))

@@ -11,8 +11,6 @@ app = Flask(__name__)
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-pin = "4507"
-
 # InfluxDB Configuration
 token = "94qWOH0wxeFMQxAUp3DfcQXeGURIIl5KudjZZdWC5bQcWTEniZyUib2vm8isbktznjpyF_PhK_7-McGoG0dW2A=="
 org = "iot"

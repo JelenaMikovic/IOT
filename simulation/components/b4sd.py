@@ -19,7 +19,7 @@ def publisher_task(event, b4sd_batch):
             publish_data_counter = 0
             b4sd_batch.clear()
         publish.multiple(local_b4sd_batch, hostname=HOSTNAME, port=PORT)
-        print(f'published {publish_data_limit} b4sd values')
+        #print(f'published {publish_data_limit} b4sd values')
         event.clear()
 
 publish_event = threading.Event()

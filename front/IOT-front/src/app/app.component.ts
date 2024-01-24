@@ -11,6 +11,8 @@ export class AppComponent implements OnInit {
 
   public alarm: boolean = false
   public numb: string = '';
+  private pin: string = "4507"
+
 
   constructor(private socket: Socket, private http: HttpClient) { }
 
@@ -32,16 +34,20 @@ export class AppComponent implements OnInit {
   }
 
   onGoClick(): void {
-    this.numb = '';
-    this.http.get('/alarm').subscribe(
-      (response: any) => {
-        console.log('Alarm turned off successfully:', response);
-      },
-      (error: any) => {
-        console.error('Error turning off alarm:', error);
-      }
-    );
-
+    if(this.numb != this.pin){
+      alert("Pin is not correct")
+    }
+    else{
+      this.numb = '';
+      this.http.get('http://localhost:5000/alarm').subscribe(
+        (response: any) => {
+          console.log('Alarm turned off successfully:', response);
+        },
+        (error: any) => {
+          console.error('Error turning off alarm:', error);
+        }
+      );
+    }
   }
 
   onDeleteClick(): void {
