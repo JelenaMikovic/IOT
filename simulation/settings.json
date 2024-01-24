@@ -104,9 +104,8 @@
         "red_pin": 12,
         "green_pin": 13,
         "blue_pin": 19,
-        "runs_on": "PI3"},
-
-
+        "runs_on": "PI3"
+    },
 
     "DS2":{
         "name": "DS2",

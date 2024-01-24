@@ -3,6 +3,7 @@ from locks import lock
 import threading
 import time
 import paho.mqtt.publish as publish
+import paho.mqtt.client as mqtt
 from broker_settings import HOSTNAME, PORT
 import json
 
@@ -10,6 +11,10 @@ ms_batch = []
 publish_data_counter = 0
 publish_data_limit = 5
 counter_lock = threading.Lock()
+system = "6253"
+pin = "4507"
+mqtt_client = mqtt.Client()
+mqtt_client.connect(HOSTNAME, 1883, 60)
 
 def publisher_task(event, ms_batch):
     global publish_data_counter, publish_data_limit
@@ -20,7 +25,7 @@ def publisher_task(event, ms_batch):
             publish_data_counter = 0
             ms_batch.clear()
         publish.multiple(local_ms_batch, hostname=HOSTNAME, port=PORT)
-        print(f'published {publish_data_limit} ms values')
+        # {publish_data_limit} ms values')
         event.clear()
 
 publish_event = threading.Event()
@@ -42,7 +47,21 @@ def ms_callback(key_pressed, publish_event, ms_settings, verbose=False):
         "runs_on": ms_settings["runs_on"],
         "name": ms_settings["name"],
         "value": key_pressed
-    }    
+    }
+
+    if(system != key_pressed):
+        if(pin == key_pressed):
+            mqtt_client.publish('topic/alarm', "off")
+            mqtt_client.publish('topic/system', "deactive")
+            print("deactive")
+        else:
+            time.sleep(10)
+            mqtt_client.publish('topic/system', "active")
+            mqtt_client.publish('topic/alarm', "on")
+            print("alrmmm")
+    else:
+        mqtt_client.publish('topic/system', "active")
+        print("active")
 
     with counter_lock:
         ms_batch.append(("topic/ms/keypressed", json.dumps(key_payload), 0, True))

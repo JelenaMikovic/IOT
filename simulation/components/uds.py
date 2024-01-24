@@ -7,7 +7,7 @@ import json
 
 uds_batch = []
 publish_data_counter = 0
-publish_data_limit = 5
+publish_data_limit = 2
 counter_lock = threading.Lock()
 
 
@@ -20,7 +20,7 @@ def publisher_task(event, uds_batch):
             publish_data_counter = 0
             uds_batch.clear()
         publish.multiple(local_uds_batch, hostname=HOSTNAME, port=PORT)
-        print(f'published {publish_data_limit} uds values')
+        #print(f'published {publish_data_limit} uds values')
         event.clear()
 
 publish_event = threading.Event()

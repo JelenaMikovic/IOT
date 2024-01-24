@@ -2,6 +2,7 @@ from locks import lock
 import threading
 import time
 import json
+import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
 from broker_settings import HOSTNAME, PORT
 
@@ -9,7 +10,8 @@ dht_batch = []
 publish_data_counter = 0
 publish_data_limit = 5
 counter_lock = threading.Lock()
-
+mqtt_client = mqtt.Client()
+mqtt_client.connect(HOSTNAME, 1883, 60)
 
 def publisher_task(event, dht_batch):
     global publish_data_counter, publish_data_limit
@@ -20,7 +22,7 @@ def publisher_task(event, dht_batch):
             publish_data_counter = 0
             dht_batch.clear()
         publish.multiple(local_dht_batch, hostname=HOSTNAME, port=PORT)
-        print(f'published {publish_data_limit} dht values')
+        #print(f'published {publish_data_limit} dht values')
         event.clear()
 
 publish_event = threading.Event()
@@ -59,6 +61,10 @@ def dht_callback(humidity, temperature, publish_event, dht_settings, code="DHTLI
         dht_batch.append(('topic/dht/temperature', json.dumps(temp_payload), 0, True))
         dht_batch.append(('topic/dht/humidity', json.dumps(humidity_payload), 0, True))
         publish_data_counter += 1
+    
+    if dht_settings['name'] == "GDHT":
+        mqtt_client.publish('topic/gdht/humidity', humidity)
+        mqtt_client.publish('topic/gdht/temperature', temperature)
 
     if publish_data_counter >= publish_data_limit:
         publish_event.set()

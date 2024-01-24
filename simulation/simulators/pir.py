@@ -11,7 +11,6 @@ def generate_values():
             detected = True
         yield detected
 
-
 def run_pir_simulator(delay, no_motion_detected_callback, motion_detected_callback, stop_event, publish_event, settings):
         for value in generate_values():
             if value:

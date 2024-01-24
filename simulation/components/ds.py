@@ -10,7 +10,6 @@ publish_data_counter = 0
 publish_data_limit = 5
 counter_lock = threading.Lock()
 
-
 def publisher_task(event, ds_batch):
     global publish_data_counter, publish_data_limit
     while True:
@@ -20,7 +19,7 @@ def publisher_task(event, ds_batch):
             publish_data_counter = 0
             ds_batch.clear()
         publish.multiple(local_ds_batch, hostname=HOSTNAME, port=PORT)
-        print(f'published {publish_data_limit} ds values')
+        #print(f'published {publish_data_limit} ds values')
         event.clear()
 
 publish_event = threading.Event()
@@ -29,7 +28,7 @@ publisher_thread.daemon = True
 publisher_thread.start()
 
 def ds_callback(publish_event, ds_settings, verbose=False):
-    global publish_data_counter, publish_data_limit
+    global publish_data_counter, publish_data_limit, last_time_pressed
 
     if verbose:
         t = time.localtime()
@@ -67,7 +66,7 @@ def run_ds(settings, threads, stop_event):
             with lock:       
                 print("Starting DS loop")
             ds = DS(settings['pin'])
-            ds_thread = threading.Thread(target=run_ds_loop, args=(ds, 2, ds_callback, stop_event, publish_event, settings))
+            ds_thread = threading.Thread(target=run_ds_loop, args=(ds, 1, ds_callback, stop_event, publish_event, settings))
             ds_thread.start()
             threads.append(ds_thread)
             with lock:       
