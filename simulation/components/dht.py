@@ -63,8 +63,9 @@ def dht_callback(humidity, temperature, publish_event, dht_settings, code="DHTLI
         publish_data_counter += 1
     
     if dht_settings['name'] == "GDHT":
-        mqtt_client.publish('topic/gdht/humidity', humidity)
-        mqtt_client.publish('topic/gdht/temperature', temperature)
+        data = {"Temperature": temperature, "Humidity": humidity}
+        json_data = json.dumps(data)
+        mqtt_client.publish("topic/gdht/data", json_data)        
 
     if publish_data_counter >= publish_data_limit:
         publish_event.set()

@@ -12,7 +12,8 @@ CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 # InfluxDB Configuration
-token = "94qWOH0wxeFMQxAUp3DfcQXeGURIIl5KudjZZdWC5bQcWTEniZyUib2vm8isbktznjpyF_PhK_7-McGoG0dW2A=="
+#token = "94qWOH0wxeFMQxAUp3DfcQXeGURIIl5KudjZZdWC5bQcWTEniZyUib2vm8isbktznjpyF_PhK_7-McGoG0dW2A=="
+token = "DyyA4waY92fqqL4sVcps8EI1_Mb4tKR_6WqfSOYuCy_7cZUUhZW0H_7YubRUYNXbhfs_i7gpOjhiZJs9lcQ0JA=="
 org = "iot"
 url = "http://localhost:8086"
 bucket = "measurements"
@@ -32,6 +33,8 @@ def on_connect(client: mqtt.Client, userdata: any, flags, result_code):
     client.subscribe("topic/pir/movement")
     client.subscribe("topic/b4sd/segment")
     client.subscribe("topic/alarm")
+    client.subscribe("topic/gyro/acceleration")    #ubrzanje
+    client.subscribe("topic/gyro/rotation")    # rotacija
 
 def save_to_db(message, verbose=True):
     write_api = influxdb_client.write_api(write_options=SYNCHRONOUS)
@@ -42,6 +45,46 @@ def save_to_db(message, verbose=True):
             socketio.emit('alarm', "on")
         else :
             socketio.emit('alarm', "off")
+      
+    elif(message.topic == "topic/gyro/rotation"):
+        data = json.loads(message.payload.decode('utf-8'))
+        try:
+            point = (
+                Point(data["measurement"])
+                .tag("simulated", data["simulated"])
+                .tag("runs_on", data["runs_on"])
+                .tag("name", data["name"])
+                .field("x", data["rotation_x"])
+                .field("y", data["rotation_x"])
+                .field("z", data["rotation_x"])
+            )
+            print(point)
+            write_api.write(bucket, org=org, record=point)
+            if verbose:
+                print("Got message: " + json.dumps(data))
+        except Exception as e:
+            exception_message = str(e)
+            print(exception_message)
+
+    elif(message.topic == "topic/gyro/acceleration"):
+        data = json.loads(message.payload.decode('utf-8'))
+        try:
+            point = (
+                Point(data["measurement"])
+                .tag("simulated", data["simulated"])
+                .tag("runs_on", data["runs_on"])
+                .tag("name", data["name"])
+                .field("x", data["acceleration_x"])
+                .field("y", data["acceleration_x"])
+                .field("z", data["acceleration_x"])
+            )
+            print(point)
+            write_api.write(bucket, org=org, record=point)
+            if verbose:
+                print("Got message: " + json.dumps(data))
+        except Exception as e:
+            exception_message = str(e)
+            print(exception_message)
     else:
         data = json.loads(message.payload.decode('utf-8'))
         try:
@@ -58,7 +101,7 @@ def save_to_db(message, verbose=True):
                 print("Got message: " + json.dumps(data))
         except Exception as e:
             exception_message = str(e)
-            print(exception_message)
+            print(exception_message)  
 
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = lambda client, userdata, msg: save_to_db(msg)
