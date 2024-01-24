@@ -1,6 +1,6 @@
 from queue import Queue
 import threading
-from settings import load_settings
+from settings import load_settings 
 from components.ds import run_ds
 from components.dl import run_dl
 from components.uds import run_uds
@@ -28,7 +28,7 @@ def start_threads(settings, threads, stop_event, dl_queue, db_queue):
     run_pir(settings["DPIR2"], threads, stop_event)
     #GDHT
     # TODO GDHT
-    run_pir(settings["DPIR2"], threads, stop_event)
+    run_dht(settings["GDHT"], threads, stop_event)
     #GLCD
     # TODO GLCD
     run_lcd(settings["GLCD"], threads, stop_event)

@@ -27,7 +27,7 @@ def run_dht_simulator(delay, callback, stop_event, publish_event, settings):
             if(settings["name"] == "GDHT"):
                   data = {"Temperature": t, "Humidity": h}
                   json_data = json.dumps(data)
-                  mqtt_client.publish("gdht/data", json_data)
+                  mqtt_client.publish("topic/gdht/data", json_data)
             if stop_event.is_set():
                   break
               

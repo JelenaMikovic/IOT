@@ -1,7 +1,7 @@
 from simulators.gyro import run_gyro_simulator
 import threading
 import time
-from locks import print_lock
+from locks import lock
 import paho.mqtt.publish as publish
 from broker_settings import HOSTNAME, PORT
 import json
@@ -30,13 +30,13 @@ publisher_thread = threading.Thread(target=publisher_task, args=(publish_event, 
 publisher_thread.daemon = True
 publisher_thread.start()
 
-def gyro_callback(gyro_data, publish_event, settings, verbose=True):
+def gyro_callback(gyro_data, publish_event, settings, verbose=False):
     global publish_data_counter, publish_data_limit
 
     t = time.localtime()
     formatted_time = time.strftime('%d.%m.%Y. %H:%M:%S', t)
     if verbose:     
-        with print_lock:
+        with lock:
             print("="*10, end=" ")
             print(settings['name'], end=" ")
             print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
@@ -72,12 +72,15 @@ def gyro_callback(gyro_data, publish_event, settings, verbose=True):
     }
 
     with counter_lock:
-        gyro_batch.append(('topic/gyro/rotation'), json.dumps(rotation_payload), 0, True)
-        gyro_batch.append(('topic/gyro/acceleration'),json.dumps(acceleration_payload), 0, True)
+        gyro_batch.append((('topic/gyro/rotation'), json.dumps(rotation_payload), 0, True))
+        gyro_batch.append((('topic/gyro/acceleration'), json.dumps(acceleration_payload), 0, True))
         publish_data_counter += 1
 
     if publish_data_counter >= publish_data_limit:
         publish_event.set()
+    
+    # TODO provera da li je napravljen pomeraj ili sta vec
+    
 
 
 
