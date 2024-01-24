@@ -8,6 +8,8 @@ from components.db import run_db
 from components.pir import run_pir
 from components.ms import run_ms
 from components.dht import run_dht
+from components.lcd import run_lcd
+from components.gyro import run_gyro
 from locks import lock
 import time
 
@@ -26,10 +28,13 @@ def start_threads(settings, threads, stop_event, dl_queue, db_queue):
     run_pir(settings["DPIR2"], threads, stop_event)
     #GDHT
     # TODO GDHT
+    run_pir(settings["DPIR2"], threads, stop_event)
     #GLCD
     # TODO GLCD
+    run_lcd(settings["GLCD"], threads, stop_event)
     #GSG
     # TODO GSG
+    run_gyro(settings["GSG"], threads, stop_event)
     #RPIR3
     run_pir(settings["RPIR3"], threads, stop_event)
     #RDHT3

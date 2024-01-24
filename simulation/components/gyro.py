@@ -48,10 +48,7 @@ def gyro_callback(gyro_data, publish_event, settings, verbose=True):
             print(f"Acceleration z: {gyro_data['acceleration_z']}")
             print("="*10)
 
-    print(gyro_data)
-    rotation_values = []
-    acceleration_values = []
-    
+    #print(gyro_data)
 
     
     rotation_payload = {
@@ -76,11 +73,13 @@ def gyro_callback(gyro_data, publish_event, settings, verbose=True):
 
     with counter_lock:
         gyro_batch.append(('topic/gyro/rotation'), json.dumps(rotation_payload), 0, True)
-        gyro_batch.append(('topic/gryo/acceleration'),json.dumps(acceleration_payload), 0, True)
+        gyro_batch.append(('topic/gyro/acceleration'),json.dumps(acceleration_payload), 0, True)
         publish_data_counter += 1
 
     if publish_data_counter >= publish_data_limit:
         publish_event.set()
+
+
 
 def run_gyro(settings, threads, stop_event):
     if settings['simulated']:

@@ -33,6 +33,8 @@ def on_connect(client: mqtt.Client, userdata: any, flags, result_code):
     client.subscribe("topic/pir/movement")
     client.subscribe("topic/b4sd/segment")
     client.subscribe("topic/alarm")
+    client.subscribe("topic/gyro/acceleration")    #ubrzanje
+    client.subscribe("topic/gyro/rotation")    # rotacija
 
 def save_to_db(data, verbose=True):
     write_api = influxdb_client.write_api(write_options=SYNCHRONOUS)
@@ -43,7 +45,8 @@ def save_to_db(data, verbose=True):
             socketio.emit('alarm', "on")
         else :
             socketio.emit('alarm', "off")
-    else:
+    elif(msg.topic == "topic/gyro/rotation"):
+        # TODO ovo je za roataciju
         try:
             point = (
                 Point(data["measurement"])
@@ -51,6 +54,45 @@ def save_to_db(data, verbose=True):
                 .tag("runs_on", data["runs_on"])
                 .tag("name", data["name"])
                 .field("measurement", data["value"])
+            )
+            print(point)
+            write_api.write(bucket, org=org, record=point)
+            if verbose:
+                print("Got message: " + json.dumps(data))
+        except Exception as e:
+            exception_message = str(e)
+            print(exception_message)        
+        pass
+    elif(msg.topic == "topic/gyro/accelerator"):
+        try:
+            point = (
+                Point(data["measurement"])
+                .tag("simulated", data["simulated"])
+                .tag("runs_on", data["runs_on"])
+                .tag("name", data["name"])
+                .field("x", data["rotation_x"])
+                .field("y", data["rotation_x"])
+                .field("z", data["rotation_x"])
+            )
+            print(point)
+            write_api.write(bucket, org=org, record=point)
+            if verbose:
+                print("Got message: " + json.dumps(data))
+        except Exception as e:
+            exception_message = str(e)
+            print(exception_message)
+        # TODO ovo je za ubrzanje
+        pass
+    else:
+        try:
+            point = (
+                Point(data["measurement"])
+                .tag("simulated", data["simulated"])
+                .tag("runs_on", data["runs_on"])
+                .tag("name", data["name"])
+                .field("x", data["accelerator_x"])
+                .field("y", data["acceletator_x"])
+                .field("z", data["rotation_x"])
             )
             print(point)
             write_api.write(bucket, org=org, record=point)
