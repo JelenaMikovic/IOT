@@ -12,7 +12,7 @@ export class AppComponent implements OnInit {
   public alarm: boolean = false
   public numb: string = '';
   private pin: string = "4507"
-
+  public selectedMode: string = 'off';
 
   constructor(private socket: Socket, private http: HttpClient) { }
 
@@ -54,5 +54,15 @@ export class AppComponent implements OnInit {
     this.numb = this.numb.slice(0, -1);
   }
 
+  onChangeMode(): void {
+    this.http.post('http://localhost:5000/rgb', { mode: this.selectedMode }).subscribe(
+      (response: any) => {
+        console.log(`RGB mode set to: ${this.selectedMode}`);
+      },
+      (error: any) => {
+        console.error('Error setting RGB mode:', error);
+      }
+    );
+  }
 
 }

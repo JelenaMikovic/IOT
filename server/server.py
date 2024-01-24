@@ -12,8 +12,8 @@ CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 # InfluxDB Configuration
-#token = "94qWOH0wxeFMQxAUp3DfcQXeGURIIl5KudjZZdWC5bQcWTEniZyUib2vm8isbktznjpyF_PhK_7-McGoG0dW2A=="
-token = "DyyA4waY92fqqL4sVcps8EI1_Mb4tKR_6WqfSOYuCy_7cZUUhZW0H_7YubRUYNXbhfs_i7gpOjhiZJs9lcQ0JA=="
+token = "94qWOH0wxeFMQxAUp3DfcQXeGURIIl5KudjZZdWC5bQcWTEniZyUib2vm8isbktznjpyF_PhK_7-McGoG0dW2A=="
+#token = "DyyA4waY92fqqL4sVcps8EI1_Mb4tKR_6WqfSOYuCy_7cZUUhZW0H_7YubRUYNXbhfs_i7gpOjhiZJs9lcQ0JA=="
 org = "iot"
 url = "http://localhost:8086"
 bucket = "measurements"
@@ -35,6 +35,8 @@ def on_connect(client: mqtt.Client, userdata: any, flags, result_code):
     client.subscribe("topic/alarm")
     client.subscribe("topic/gyro/acceleration")    #ubrzanje
     client.subscribe("topic/gyro/rotation")    # rotacija
+    client.subscribe("topic/rgb/light")
+    client.subscribe("topic/ir/hue")
 
 def save_to_db(message, verbose=True):
     write_api = influxdb_client.write_api(write_options=SYNCHRONOUS)

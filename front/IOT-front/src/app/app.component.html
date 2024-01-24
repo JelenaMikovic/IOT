@@ -1,7 +1,19 @@
 <div style="width: 100%; height: 500px;">
   <iframe src="http://localhost:3000/d-solo/ffc89193-6083-472e-ae50-6b0897199274/dashbords-iot?orgId=1&from=1705704359055&to=1705704659055&panelId=1" width="450" height="200" frameborder="0"></iframe>
 </div>
-
+<div>
+  <label for="modeSelect">Select RGB Mode:</label>
+  <select id="modeSelect" [(ngModel)]="selectedMode" (change)="onChangeMode()">
+    <option value="off">Off</option>
+    <option value="red">Red</option>
+    <option value="blue">Blue</option>
+    <option value="green">Green</option>
+    <option value="white">White</option>
+    <option value="yellow">Yellow</option>
+    <option value="purple">Purple</option>
+    <option value="light_blue">Light Blue</option>
+  </select>
+</div>
 <div *ngIf="alarm" class="overlay">
   <div class="popup">
     <div id="container">

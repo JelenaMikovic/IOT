@@ -10,6 +10,7 @@ from components.ms import run_ms
 from components.dht import run_dht
 from components.b4sd import run_b4sd
 from components.rgb import run_rgb
+from components.ir import run_ir
 from locks import lock
 import time
 
@@ -29,7 +30,7 @@ def start_threads(settings, threads, stop_event, dl_queue, db_queue):
     # B4SD
     run_b4sd(settings["B4SD"], threads, stop_event)
     # BIR
-
+    run_ir(settings["BIR"], threads, stop_event)
     # BRGB
     run_rgb(settings["BRGB"], threads, stop_event)
 

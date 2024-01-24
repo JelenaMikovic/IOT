@@ -33,7 +33,7 @@ def callback(publish_event, rgb_settings, mode, verbose=False):
     global publish_data_counter, publish_data_limit, rgb_batch
     
     no_movement_payload = {
-        "measurement": "Light",
+        "measurement": "Mode",
         "simulated": rgb_settings['simulated'],
         "runs_on": rgb_settings["runs_on"],
         "name": rgb_settings["name"],

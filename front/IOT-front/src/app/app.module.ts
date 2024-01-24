@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 const config: SocketIoConfig = { url: 'http://localhost:5000', options: {} };
 
@@ -17,6 +18,7 @@ const config: SocketIoConfig = { url: 'http://localhost:5000', options: {} };
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    FormsModule, 
     SocketIoModule.forRoot(config)
   ],
   providers: [],
