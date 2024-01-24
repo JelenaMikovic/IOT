@@ -13,7 +13,7 @@ CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*") 
 
 # InfluxDB Configuration
-token = "DyyA4waY92fqqL4sVcps8EI1_Mb4tKR_6WqfSOYuCy_7cZUUhZW0H_7YubRUYNXbhfs_i7gpOjhiZJs9lcQ0JA=="
+token = "94qWOH0wxeFMQxAUp3DfcQXeGURIIl5KudjZZdWC5bQcWTEniZyUib2vm8isbktznjpyF_PhK_7-McGoG0dW2A=="
 org = "iot"
 url = "http://localhost:8086"
 bucket = "measurements"
@@ -34,16 +34,17 @@ def on_connect(client: mqtt.Client, userdata: any, flags, result_code):
     client.subscribe("topic/b4sd/segment")
     client.subscribe("topic/alarm")
 
-def save_to_db(data, verbose=True):
+def save_to_db(message, verbose=True):
     write_api = influxdb_client.write_api(write_options=SYNCHRONOUS)
-    if(msg.topic == "topic/alarm"):
-        point = (Point("alarm").field("measurement", msg.payload.decode("utf-8")))
+    if(message.topic == "topic/alarm"):
+        point = (Point("alarm").field("measurement", message.payload.decode("utf-8")))
         write_api.write(bucket=bucket, org=org, record=point)
-        if msg.payload.decode("utf-8") == "on":
+        if message.payload.decode("utf-8") == "on":
             socketio.emit('alarm', "on")
         else :
             socketio.emit('alarm', "off")
     else:
+        data = json.loads(message.payload.decode('utf-8'))
         try:
             point = (
                 Point(data["measurement"])
@@ -61,7 +62,7 @@ def save_to_db(data, verbose=True):
             print(exception_message)
 
 mqtt_client.on_connect = on_connect
-mqtt_client.on_message = lambda client, userdata, msg: save_to_db(json.loads(msg.payload.decode('utf-8')))
+mqtt_client.on_message = lambda client, userdata, msg: save_to_db(msg)
 mqtt_client.connect("localhost", 1883, 60)
 mqtt_client.loop_start()
 
@@ -79,6 +80,7 @@ def store_data():
 def alarm_off():
     try:
         mqtt_client.publish("topic/alarm", "off")
+        socketio.emit('alarm', "off")
         return jsonify({"status": "success"})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)})
