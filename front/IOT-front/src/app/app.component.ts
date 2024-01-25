@@ -14,6 +14,7 @@ export class AppComponent implements OnInit {
   public numb: string = '';
   private pin: string = "4507"
   public selectedMode: string = 'off';
+  selectedPi: string = "";
 
   selectedHour: string = "00";
   selectedMinute: string = "00";
