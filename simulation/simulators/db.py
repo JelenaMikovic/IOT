@@ -10,6 +10,7 @@ mqtt_client.connect(HOSTNAME, 1883, 60)
 mqtt_client.loop_start()
 mqtt_client.subscribe("topic/alarm")
 mqtt_client.subscribe("topic/system")
+mqtt_client.subscribe("topic/db/clock")
 buzzing = False
 system = False
 
@@ -28,7 +29,11 @@ def on_message(callback, publish_event, settings, message):
     elif action == "deactive":
         system = False
         buzzing = False
-
+    elif action == "clockOn" and settings["name"] == "BB":
+        buzzing = True
+    elif action == "clockOff" and settings["name"] == "BB":
+        buzzing = False
+        
 def run_db_simulator(queue, pitch, duration, callback, stop_event, publish_event, settings):
     mqtt_client.on_message = lambda client, userdata, message: on_message(callback, publish_event, settings, message)
     while not stop_event.is_set():

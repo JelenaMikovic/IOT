@@ -18,23 +18,77 @@
   <div class="popup">
     <div id="container">
       <h1>{{numb}}</h1>
-      <ul id="keyboard">   
-        <li class="letter" (click)="updateNumber('1')">1</li>  
-        <li class="letter" (click)="updateNumber('2')">2</li>  
-        <li class="letter" (click)="updateNumber('3')">3</li>  
-        <li class="letter clearl" (click)="updateNumber('4')">4</li>  
-        <li class="letter" (click)="updateNumber('5')">5</li>  
-        <li class="letter" (click)="updateNumber('6')">6</li>  
-        
-        <li class="letter clearl" (click)="updateNumber('7')">7</li>  
-        <li class="letter" (click)="updateNumber('8')">8</li>  
-        <li class="letter" (click)="updateNumber('9')">9</li>  
+      <ul id="keyboard">
+        <li class="letter" (click)="updateNumber('1')">1</li>
+        <li class="letter" (click)="updateNumber('2')">2</li>
+        <li class="letter" (click)="updateNumber('3')">3</li>
+        <li class="letter clearl" (click)="updateNumber('4')">4</li>
+        <li class="letter" (click)="updateNumber('5')">5</li>
+        <li class="letter" (click)="updateNumber('6')">6</li>
+
+        <li class="letter clearl" (click)="updateNumber('7')">7</li>
+        <li class="letter" (click)="updateNumber('8')">8</li>
+        <li class="letter" (click)="updateNumber('9')">9</li>
         <li class="letter clearl" (click)="updateNumber('0')">0</li>
         <li class="letter" (click)="onGoClick()">GO</li>
-        <li class="letter" (click)="onDeleteClick()">DEL</li>  
-      </ul>  
-    </div>  
+        <li class="letter" (click)="onDeleteClick()">DEL</li>
+      </ul>
+    </div>
   </div>
 </div>
 
+<div>
+  <label for="hours">Hours:</label>
+  <select id="hours" [(ngModel)]="selectedHour">
+    <option value="00">00</option>
+    <option value="01">1</option>
+    <option value="02">2</option>
+    <option value="03">3</option>
+    <option value="04">4</option>
+    <option value="05">5</option>
+    <option value="06">6</option>
+    <option value="07">7</option>
+    <option value="08">8</option>
+    <option value="09">9</option>
+    <option value="10">10</option>
+    <option value="11">11</option>
+    <option value="12">12</option>
+    <option value="13">13</option>
+    <option value="14">14</option>
+    <option value="15">15</option>
+    <option value="16">16</option>
+    <option value="17">17</option>
+    <option value="18">18</option>
+    <option value="19">19</option>
+    <option value="20">20</option>
+    <option value="21">21</option>
+    <option value="22">22</option>
+    <option value="23">23</option>
+  </select>
+
+  <label for="minutes">Minutes:</label>
+  <select id="minutes" [(ngModel)]="selectedMinute">
+    <option value="0">00</option>
+    <option value="05">05</option>
+    <option value="10">10</option>
+    <option value="15">15</option>
+    <option value="20">20</option>
+    <option value="25">25</option>
+    <option value="30">30</option>
+    <option value="35">35</option>
+    <option value="40">40</option>
+    <option value="45">45</option>
+    <option value="50">50</option>
+    <option value="55">55</option>
+  </select>
+  <button (click)="addAlarmCLock()">Add alarm clock</button>
+</div>
+
+
+<div *ngIf="alarmClock" class="overlay">
+  <div class="popup">
+    <h2>Alarm clock is on!</h2>
+    <button (click)="turnOffAlarmClock()">Turn off</button>
+  </div>
+</div>
 

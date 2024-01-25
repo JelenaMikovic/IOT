@@ -10,9 +10,13 @@ import { Socket } from 'ngx-socket-io';
 export class AppComponent implements OnInit {
 
   public alarm: boolean = false
+  public alarmClock: boolean = false;
   public numb: string = '';
   private pin: string = "4507"
   public selectedMode: string = 'off';
+
+  selectedHour: string = "00";
+  selectedMinute: string = "00";
 
   constructor(private socket: Socket, private http: HttpClient) { }
 
@@ -23,6 +27,16 @@ export class AppComponent implements OnInit {
         this.alarm = true
       } else {
         this.alarm = false
+      }
+    });
+
+    this.socket.on('alarmClock', (data: string) => {
+      console.log('Alarm clock status:', data);
+      if(data == "clockOn"){
+        console.log("UKLJUCEN ALARM ZA BUDJENJE!!!!!!")
+        this.alarmClock = true
+      } else {
+        this.alarmClock = false
       }
     });
   }
@@ -61,6 +75,31 @@ export class AppComponent implements OnInit {
       },
       (error: any) => {
         console.error('Error setting RGB mode:', error);
+      }
+    );
+  }
+
+  addAlarmCLock():void{
+    let time = this.selectedHour + ":" + this.selectedMinute;
+    console.log(time);
+    this.http.post('http://localhost:5000/addAlarmClock', { req : time }).subscribe(
+      (response: any) => {
+        console.log(`Alarm clock set to : ${time}`);
+      },
+      (error: any) => {
+        console.error('Error setting RGB mode:', error);
+      }
+    );
+  }
+
+
+  turnOffAlarmClock(): void{
+    this.http.get('http://localhost:5000/alarmClockOff').subscribe(
+      (response: any) => {
+        console.log('Alarm clock turned off successfully:', response);
+      },
+      (error: any) => {
+        console.error('Error turning off alarm:', error);
       }
     );
   }
