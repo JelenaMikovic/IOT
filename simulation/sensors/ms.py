@@ -51,10 +51,10 @@ class MS(object):
 		return pin
 		
 	def run_ms_loop(self, delay, callback, stop_event, publish_event, settings):
-        pin_length = 4  
-        while True:
-            pin_entered = self.key_press(pin_length)
-            callback(pin_entered, publish_event, settings)
-            if stop_event.is_set():
-                break
-            time.sleep(delay)
+		pin_length = 4  
+		while True:
+			pin_entered = self.key_press(pin_length)
+			callback(pin_entered, publish_event, settings)
+			if stop_event.is_set():
+				break
+			time.sleep(delay)
