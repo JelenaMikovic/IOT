@@ -2,15 +2,28 @@ from simulators.gyro import run_gyro_simulator
 import threading
 import time
 from locks import lock
+import json
+import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
 from broker_settings import HOSTNAME, PORT
-import json
-
 
 gyro_batch = []
 publish_data_counter = 0
 publish_data_limit = 6
 counter_lock = threading.Lock()
+mqtt_client = mqtt.Client()
+mqtt_client.connect(HOSTNAME, 1883, 60)
+mqtt_client.subscribe("topic/system")
+mqtt_client.on_message = lambda client, userdata, message: on_message(message)
+mqtt_client.loop_start() 
+system = False
+
+def on_message(message):
+    global system
+    if message.payload.decode("utf-8") == "active":
+        system = True
+    elif message.payload.decode("utf-8") == "deactive":
+        system = False
 
 def publisher_task(event, gyro_batch):
     global publish_data_counter, publish_data_limit
@@ -78,10 +91,11 @@ def gyro_callback(gyro_data, publish_event, settings, verbose=False):
 
     if publish_data_counter >= publish_data_limit:
         publish_event.set()
-    
-    # TODO provera da li je napravljen pomeraj ili sta vec
-    
 
+    threshold = 1.0  
+    angular_velocity = (gyro_data["rotation_x"]**2 + gyro_data["rotation_y"]**2 + gyro_data["rotation_z"]**2)**0.5
+    if angular_velocity > thresholdand and system:
+        mqtt_client.publish('topic/alarm', "on")
 
 
 def run_gyro(settings, threads, stop_event):
