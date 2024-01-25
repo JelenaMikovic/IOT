@@ -24,12 +24,16 @@ def generate_values():
 
 
 def run_gyro_simulator(delay,callback, stop_event, publish_event, settings):
-    threshold = 0.45  # Set your threshold for significant gyroscope movement
+    threshold = 1.0  # Set your threshold for significant gyroscope movement
     mqtt_client = mqtt.Client()
     mqtt_client.connect(HOSTNAME, 1883, 60)
     for gyro_data in generate_values():
         # TODO dodaj proveru za alarm
         time.sleep(delay)  # Delay between readings (adjust as needed)
+        angular_velocity = (gyro_data["rotation_x"]**2 + gyro_data["rotation_y"]**2 + gyro_data["rotation_z"]**2)**0.5
+        if angular_velocity > threshold:
+            # TODO obavesti da se desio pokret
+            pass
         callback(gyro_data, publish_event, settings, False)
         if stop_event.is_set():
             break

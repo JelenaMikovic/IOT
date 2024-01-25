@@ -15,6 +15,7 @@ class DB(object):
         self.mqtt_client.on_message = self.on_message
         self.mqtt_client.subscribe("topic/alarm")
         self.mqtt_client.subscribe("topic/system")
+        self.mqtt_client.subscribe("topic/db/clock")
         self.mqtt_client.loop_start()
         self.buzzing = False
         self.system = False
@@ -32,6 +33,11 @@ class DB(object):
             this.system = True
         elif action == "deactive":
             this.system = False
+            self.stop_buzz()
+        elif action == "clockOn" and settings["name"] == "BB":
+            self.start_buzz()
+        elif action == "clockOff" and settings["name"] == "BB":
+            self.stop_buzz()
 
     def buzz(self, pitch, duration):
         period = 1.0 / pitch
