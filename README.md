@@ -1,4 +1,4 @@
-#Raspberry Pi Smart Home System
+Raspberry Pi Smart Home System
 
 - Overview:
 
