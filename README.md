@@ -14,7 +14,9 @@ Logic-based on sensor inputs, including ALARM states, temperature/humidity displ
 - Components:
 
 Sensors: Door, Motion, Ultrasonic, PIR, DHT, Gyro, Infrared.
+
 Actuators: LED diodes, Buzzer, LCD, 7 Segment Display, RGB Bulb.
+
 Functionality:
 The project simulates and controls various aspects of a smart home environment, addressing security, environmental monitoring, and user interaction. The web application offers an intuitive interface, while sensor inputs trigger logic-based responses, creating a versatile and practical smart home solution.
 
